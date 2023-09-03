@@ -62,20 +62,10 @@ int main() {
     double cpu_time_used_clock;
 
     start_clock = clock();
-    performTask(); // Call the function whose execution time you want to measure
     end_clock = clock();
 
     cpu_time_used_clock = ((double)(end_clock - start_clock)) / CLOCKS_PER_SEC;
     printf("CPU time used (clock()): %f seconds\n", cpu_time_used_clock);
 
-    // Method 2: Using gettimeofday()
-    struct timeval start_timeval, end_timeval;
-    double elapsed_timeval;
 
-    gettimeofday(&start_timeval, NULL);
-    gettimeofday(&end_timeval, NULL);
-
-    elapsed_timeval = (end_timeval.tv_sec - start_timeval.tv_sec) +
-                      (end_timeval.tv_usec - start_timeval.tv_usec) / 1000000.0;
-    printf("Elapsed time (gettimeofday()): %f seconds\n", elapsed_timeval);
 }
