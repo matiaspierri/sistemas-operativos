@@ -73,7 +73,6 @@ int main() {
     double elapsed_timeval;
 
     gettimeofday(&start_timeval, NULL);
-    performTask(); // Call the function whose execution time you want to measure
     gettimeofday(&end_timeval, NULL);
 
     elapsed_timeval = (end_timeval.tv_sec - start_timeval.tv_sec) +
