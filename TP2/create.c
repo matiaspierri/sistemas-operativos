@@ -23,5 +23,8 @@ int main()  {
   i2 = 2;
   pthread_create(&f1_thread,NULL,f1, &i1);
   pthread_create(&f2_thread,NULL,f2, &i2);
+
+  pthread_join(f1_thread, NULL);
+  pthread_join(f1_thread, NULL);
   return(0);
 }
