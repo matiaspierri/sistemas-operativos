@@ -45,15 +45,12 @@ void* threadfunc(void* arg) {
 int main() {
     pthread_t th[2];
     int tn[2]={0,1};  // número de hilo a pasar a pthread_create
-    // for (int i = 0; i < THREADS; ++i)
-    //    pthread_create(&th[i], NULL, threadfunc, &tn[i]);
-    // for (int i = 0; i < THREADS; ++i)
-    //    pthread_join(th[i], NULL);
 
-   
-    for (int i = 0; i < THREADS; ++i)
+    for (int i = 0; i < THREADS; ++i) {   
        pthread_create(&th[i], NULL, threadfunc, &tn[i]);
        pthread_join(th[i], NULL);
+    }
+   
 
 
     printf("x=%u\n", x);
