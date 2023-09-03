@@ -5,6 +5,8 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <time.h>
+#include <sys/time.h>
+
 #define THREADS 2
 #define K 10 * 1000 * 1000
 
