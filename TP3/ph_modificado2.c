@@ -5,6 +5,7 @@
  *  -g  to emit extra information for use by a debugger
  */
 
+
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -21,9 +22,10 @@ struct entry {
   struct entry *next;
 };
 struct entry *table[NBUCKET];
-
 int keys[NKEYS];
 int nthread = 1;
+
+pthread_mutex_t lock;                 // declarar un lock
 
 double
 now()
@@ -83,8 +85,14 @@ put_thread(void *xa)
   int n = (int) (long) xa; // thread number
   int b = NKEYS/nthread;
 
+
+   
+
+
   for (int i = 0; i < b; i++) {
+    pthread_mutex_lock(&lock);        // adquirir el lock
     put(keys[b*n + i], n);
+    pthread_mutex_unlock(&lock);      // desbloquear el lock
   }
 
   return NULL;
@@ -104,9 +112,10 @@ get_thread(void *xa)
   return NULL;
 }
 
-int
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
+  pthread_mutex_init(&lock, NULL);
+
   pthread_t *tha;
   void *value;
   double t1, t0;
@@ -127,12 +136,14 @@ main(int argc, char *argv[])
   // first the puts
   //
   t0 = now();
+
   for(int i = 0; i < nthread; i++) {
     assert(pthread_create(&tha[i], NULL, put_thread, (void *) (long) i) == 0);
   }
   for(int i = 0; i < nthread; i++) {
     assert(pthread_join(tha[i], &value) == 0);
   }
+
   t1 = now();
 
   printf("%d puts, %.3f seconds, %.0f puts/second\n",

@@ -21,7 +21,7 @@ struct entry {
   struct entry *next;
 };
 struct entry *table[NBUCKET];
-
+pthread_mutex_t bucket_locks[NBUCKET]; // Locks for each bucket
 int keys[NKEYS];
 int nthread = 1;
 
@@ -48,6 +48,9 @@ void put(int key, int value)
 {
   int i = key % NBUCKET;
 
+  // Lock the bucket before inserting
+  pthread_mutex_lock(&bucket_locks[i]);
+
   // is the key already present?
   struct entry *e = 0;
   for (e = table[i]; e != 0; e = e->next) {
@@ -61,6 +64,9 @@ void put(int key, int value)
     // the new is new.
     insert(key, value, &table[i], table[i]);
   }
+
+  pthread_mutex_unlock(&bucket_locks[i]); // Unlock the bucket
+
 }
 
 static struct entry*
@@ -111,6 +117,11 @@ main(int argc, char *argv[])
   void *value;
   double t1, t0;
 
+  // Initialize bucket locks
+  for (int i = 0; i < NBUCKET; i++) {
+    pthread_mutex_init(&bucket_locks[i], NULL);
+  }
+  
   if (argc < 2) {
     fprintf(stderr, "Usage: %s nthreads\n", argv[0]);
     exit(-1);
